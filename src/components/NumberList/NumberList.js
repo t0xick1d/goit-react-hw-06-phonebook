@@ -1,21 +1,32 @@
-import PropTypes from 'prop-types';
 import ItemList from './ItemList';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContact } from '../../redux-store/contactsSlice';
 
 import style from './NumberList.module.css';
 
-function NumberList({ list = [], deleteContact }) {
+function NumberList() {
+  const list = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.contacts.filter.toLowerCase());
+  const dispatch = useDispatch();
+
+  const visibleContact = list
+    ? list.filter(contact => contact.name.toLowerCase().includes(filter))
+    : '';
+
   return (
     <>
       <div className={style.title}>Contacts</div>
       <ul className={style.list}>
-        {list.map(e => {
+        {visibleContact.map(e => {
           return (
             <ItemList
               key={e.id}
               id={e.id}
               name={e.name}
               number={e.number}
-              deleteContact={deleteContact}
+              deleteContact={() => {
+                dispatch(deleteContact(e.id));
+              }}
             />
           );
         })}
@@ -25,12 +36,3 @@ function NumberList({ list = [], deleteContact }) {
 }
 
 export default NumberList;
-
-NumberList.propTypes = {
-  list: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  deleteContact: PropTypes.func.isRequired,
-};

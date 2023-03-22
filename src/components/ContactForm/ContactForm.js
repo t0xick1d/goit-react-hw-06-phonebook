@@ -1,14 +1,17 @@
 import { useState, useRef } from 'react';
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { addNumber } from '../../redux-store/contactsSlice';
 
 import style from './ContactForm.module.css';
 
-function FormNumber({ addNumber }) {
+function FormNumber() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const idName = useRef(nanoid()).current;
   const idNumber = useRef(nanoid()).current;
+
+  const dispatch = useDispatch();
 
   const onSubmitForm = e => {
     e.preventDefault();
@@ -18,7 +21,7 @@ function FormNumber({ addNumber }) {
       name: name,
       number: number,
     };
-    addNumber(numberInfo);
+    dispatch(addNumber(numberInfo));
     reset();
   };
   const reset = () => {
@@ -68,7 +71,3 @@ function FormNumber({ addNumber }) {
 }
 
 export default FormNumber;
-
-FormNumber.propTypes = {
-  addNumber: PropTypes.func.isRequired,
-};
